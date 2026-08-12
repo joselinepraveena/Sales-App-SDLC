@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: os_baseline
+  author: sales-platform
+  description: CIS-aligned operating system baseline
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Ubuntu
+      versions: ["22.04", "24.04"]

@@ -1,0 +1,26 @@
+openapi: 3.1.0
+info:
+  title: Payment
+  version: 0.1.0
+  description: Authorization, capture, refund, and provider token references. Card data never enters this service.
+paths:
+  /api/v1/payments/authorize:
+    post:
+      summary: Authorize payment using a provider token
+      responses:
+        "201":
+          description: Authorized
+        "422":
+          description: Authorization failed
+  /api/v1/payments/{id}/capture:
+    post:
+      summary: Capture an authorization
+      responses:
+        "200":
+          description: Captured
+  /api/v1/payments/{id}/refund:
+    post:
+      summary: Refund
+      responses:
+        "200":
+          description: Refunded

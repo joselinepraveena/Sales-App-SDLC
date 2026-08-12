@@ -1,0 +1,8 @@
+---
+- name: Configure utility and bastion hosts
+  hosts: utility
+  become: true
+  roles:
+    - os-baseline
+    - utility-vm
+  tags: [utility]

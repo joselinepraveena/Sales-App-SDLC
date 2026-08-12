@@ -1,0 +1,17 @@
+name: pricing-service
+image:
+  repository: pricing-service
+  digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+labels:
+  environment: test
+  owner: pricing-domain
+config:
+  OTEL_SERVICE_NAME: pricing-service
+keda:
+  enabled: true
+  triggers:
+    - type: azure-servicebus
+      metadata:
+        queueName: pricing.commands
+        namespace: sb-sales-test
+        messageCount: "20"

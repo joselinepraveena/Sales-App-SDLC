@@ -1,0 +1,12 @@
+name: customer-service
+image:
+  repository: customer-service
+  digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+labels:
+  environment: test
+  owner: customer-domain
+config:
+  OTEL_SERVICE_NAME: customer-service
+  SPRING_DATASOURCE_URL: jdbc:postgresql://psql-sales-test-customer.postgres.database.azure.com:5432/customer
+keda:
+  enabled: false

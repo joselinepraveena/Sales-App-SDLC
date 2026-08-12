@@ -1,0 +1,17 @@
+openapi: 3.1.0
+info:
+  title: Sales Analytics
+  version: 0.1.0
+paths:
+  /api/v1/kpis:
+    get:
+      summary: Sales KPIs
+      responses:
+        "200":
+          description: KPI snapshot
+  /api/v1/forecasts:
+    post:
+      summary: Publish a forecast update
+      responses:
+        "201":
+          description: Stored

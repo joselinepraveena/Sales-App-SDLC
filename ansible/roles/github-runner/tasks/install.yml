@@ -1,0 +1,26 @@
+---
+- name: Create runner user
+  ansible.builtin.user:
+    name: github-runner
+    system: true
+    create_home: true
+    shell: /usr/sbin/nologin
+
+- name: Download runner from GitHub releases
+  ansible.builtin.get_url:
+    url: "https://github.com/actions/runner/releases/download/v{{ github_runner_version }}/actions-runner-linux-x64-{{ github_runner_version }}.tar.gz"
+    dest: /opt/actions-runner.tgz
+    mode: "0644"
+
+- name: Unpack runner
+  ansible.builtin.unarchive:
+    src: /opt/actions-runner.tgz
+    dest: /opt/actions-runner
+    remote_src: true
+    creates: /opt/actions-runner/config.sh
+    owner: github-runner
+    group: github-runner
+
+- name: Remind operators to fetch registration token from Key Vault at runtime
+  ansible.builtin.debug:
+    msg: Retrieve the runner registration token from Azure Key Vault at runtime. Do not store tokens in playbooks.

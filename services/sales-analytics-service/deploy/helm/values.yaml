@@ -1,0 +1,16 @@
+name: sales-analytics-service
+image:
+  repository: sales-analytics-service
+labels:
+  owner: analytics-domain
+  costCenter: cc-sales
+  dataClassification: confidential
+config:
+  OTEL_SERVICE_NAME: sales-analytics-service
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

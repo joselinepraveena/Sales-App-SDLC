@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: sales-services
+  namespace: argocd
+spec:
+  goTemplate: true
+  generators:
+    - matrix:
+        generators:
+          - list:
+              elements:
+                - env: dev
+                  autoSync: "true"
+                - env: test
+                  autoSync: "true"
+                - env: stage
+                  autoSync: "false"
+                - env: prod
+                  autoSync: "false"
+          - list:
+              elements:
+                - service: customer-service
+                - service: product-catalog-service
+                - service: pricing-service
+                - service: inventory-service
+                - service: order-service
+                - service: payment-service
+                - service: notification-service
+                - service: sales-analytics-service
+  template:
+    metadata:
+      name: "{{.service}}-{{.env}}"
+      labels:
+        sales.example/environment: "{{.env}}"
+        sales.example/service: "{{.service}}"
+    spec:
+      project: sales-platform
+      sources:
+        - repoURL: https://github.com/joselinepraveena/Sales-App-SDLC.git
+          targetRevision: main
+          path: charts/sales-service
+          helm:
+            valueFiles:
+              - $values/gitops/apps/{{.env}}/{{.service}}.yaml
+        - repoURL: https://github.com/joselinepraveena/Sales-App-SDLC.git
+          targetRevision: main
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: sales-{{.env}}
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+        retry:
+          limit: 3

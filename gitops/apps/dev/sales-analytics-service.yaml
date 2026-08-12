@@ -1,0 +1,9 @@
+name: sales-analytics-service
+image:
+  repository: sales-analytics-service
+  digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+labels:
+  environment: dev
+  owner: analytics-domain
+config:
+  OTEL_SERVICE_NAME: sales-analytics-service

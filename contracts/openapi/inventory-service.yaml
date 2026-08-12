@@ -1,0 +1,35 @@
+openapi: 3.1.0
+info:
+  title: Inventory
+  version: 0.1.0
+paths:
+  /api/v1/reservations:
+    post:
+      summary: Reserve stock
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sku, warehouseId, quantity]
+              properties:
+                sku: { type: string }
+                warehouseId: { type: string }
+                quantity: { type: integer, minimum: 1 }
+      responses:
+        "201":
+          description: Reserved
+        "409":
+          description: Insufficient stock
+  /api/v1/reservations/{id}/release:
+    post:
+      summary: Release a reservation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Released

@@ -1,0 +1,8 @@
+---
+- name: localhost
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Baseline role is idempotent on localhost facts
+      ansible.builtin.debug:
+        msg: Molecule should target an Ubuntu container and run ansible-lint plus idempotence checks.

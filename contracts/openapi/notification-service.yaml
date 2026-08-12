@@ -1,0 +1,23 @@
+openapi: 3.1.0
+info:
+  title: Notification
+  version: 0.1.0
+paths:
+  /api/v1/notifications:
+    post:
+      summary: Dispatch a notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [channel, template_id, recipient]
+              properties:
+                channel:
+                  enum: [email, sms, push, webhook]
+                template_id: { type: string }
+                recipient: { type: string }
+      responses:
+        "202":
+          description: Accepted

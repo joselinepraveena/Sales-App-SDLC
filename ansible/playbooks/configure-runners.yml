@@ -1,0 +1,10 @@
+---
+- name: Harden self-hosted GitHub Actions runners
+  hosts: github_runners
+  become: true
+  roles:
+    - os-baseline
+    - github-runner
+  vars:
+    key_vault_name: kv-sales-dev
+  tags: [runners]

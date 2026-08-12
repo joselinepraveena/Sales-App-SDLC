@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sales.example/schemas/cloudevents.json",
+  "title": "Sales platform CloudEvent envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["specversion", "id", "source", "type", "time", "datacontenttype", "data"],
+  "properties": {
+    "specversion": { "const": "1.0" },
+    "id": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "minLength": 1 },
+    "type": {
+      "type": "string",
+      "enum": [
+        "com.sales.customer.created.v1",
+        "com.sales.customer.updated.v1",
+        "com.sales.product.published.v1",
+        "com.sales.product.changed.v1",
+        "com.sales.pricing.price-changed.v1",
+        "com.sales.pricing.promotion-activated.v1",
+        "com.sales.inventory.reserved.v1",
+        "com.sales.inventory.released.v1",
+        "com.sales.inventory.stock-changed.v1",
+        "com.sales.order.created.v1",
+        "com.sales.order.confirmed.v1",
+        "com.sales.order.cancelled.v1",
+        "com.sales.payment.authorized.v1",
+        "com.sales.payment.failed.v1",
+        "com.sales.payment.refund-completed.v1",
+        "com.sales.notification.requested.v1",
+        "com.sales.notification.delivered.v1",
+        "com.sales.analytics.forecast-updated.v1"
+      ]
+    },
+    "time": { "type": "string", "format": "date-time" },
+    "datacontenttype": { "const": "application/json" },
+    "subject": { "type": "string" },
+    "dataschema": { "type": "string" },
+    "idempotencykey": { "type": "string" },
+    "correlationid": { "type": "string" },
+    "traceparent": { "type": "string" },
+    "data": { "type": "object" }
+  }
+}

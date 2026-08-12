@@ -1,0 +1,16 @@
+name: order-service
+image:
+  repository: order-service
+labels:
+  owner: order-domain
+  costCenter: cc-sales
+  dataClassification: confidential
+config:
+  OTEL_SERVICE_NAME: order-service
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

@@ -1,0 +1,3 @@
+---
+- name: Install approved GitHub Actions runner
+  ansible.builtin.include_tasks: install.yml

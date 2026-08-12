@@ -1,0 +1,8 @@
+---
+github_runner_version: "2.321.0"
+github_runner_labels:
+  - self-hosted
+  - linux
+  - sales-platform
+github_org: joselinepraveena
+key_vault_name: kv-sales-dev

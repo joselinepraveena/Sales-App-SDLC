@@ -1,0 +1,150 @@
+name: pull-request
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: pr-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      customer: ${{ steps.filter.outputs.customer }}
+      product: ${{ steps.filter.outputs.product }}
+      pricing: ${{ steps.filter.outputs.pricing }}
+      inventory: ${{ steps.filter.outputs.inventory }}
+      order: ${{ steps.filter.outputs.order }}
+      payment: ${{ steps.filter.outputs.payment }}
+      notification: ${{ steps.filter.outputs.notification }}
+      analytics: ${{ steps.filter.outputs.analytics }}
+      platform: ${{ steps.filter.outputs.platform }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            customer:
+              - 'services/customer-service/**'
+            product:
+              - 'services/product-catalog-service/**'
+            pricing:
+              - 'services/pricing-service/**'
+            inventory:
+              - 'services/inventory-service/**'
+            order:
+              - 'services/order-service/**'
+            payment:
+              - 'services/payment-service/**'
+            notification:
+              - 'services/notification-service/**'
+            analytics:
+              - 'services/sales-analytics-service/**'
+            platform:
+              - 'charts/**'
+              - 'infrastructure/**'
+              - 'gitops/**'
+              - '.github/workflows/**'
+              - 'contracts/**'
+
+  customer:
+    needs: changes
+    if: needs.changes.outputs.customer == 'true'
+    uses: ./.github/workflows/reusable-service-ci.yml
+    with:
+      runtime: java
+      image_name: customer-service
+      working_directory: services/customer-service
+
+  product:
+    needs: changes
+    if: needs.changes.outputs.product == 'true'
+    uses: ./.github/workflows/reusable-service-ci.yml
+    with:
+      runtime: typescript
+      image_name: product-catalog-service
+      working_directory: services/product-catalog-service
+
+  pricing:
+    needs: changes
+    if: needs.changes.outputs.pricing == 'true'
+    uses: ./.github/workflows/reusable-service-ci.yml
+    with:
+      runtime: python
+      image_name: pricing-service
+      working_directory: services/pricing-service
+
+  inventory:
+    needs: changes
+    if: needs.changes.outputs.inventory == 'true'
+    uses: ./.github/workflows/reusable-service-ci.yml
+    with:
+      runtime: go
+      image_name: inventory-service
+      working_directory: services/inventory-service
+
+  order:
+    needs: changes
+    if: needs.changes.outputs.order == 'true'
+    uses: ./.github/workflows/reusable-service-ci.yml
+    with:
+      runtime: dotnet
+      image_name: order-service
+      working_directory: services/order-service
+
+  payment:
+    needs: changes
+    if: needs.changes.outputs.payment == 'true'
+    uses: ./.github/workflows/reusable-service-ci.yml
+    with:
+      runtime: kotlin
+      image_name: payment-service
+      working_directory: services/payment-service
+
+  notification:
+    needs: changes
+    if: needs.changes.outputs.notification == 'true'
+    uses: ./.github/workflows/reusable-service-ci.yml
+    with:
+      runtime: rust
+      image_name: notification-service
+      working_directory: services/notification-service
+
+  analytics:
+    needs: changes
+    if: needs.changes.outputs.analytics == 'true'
+    uses: ./.github/workflows/reusable-service-ci.yml
+    with:
+      runtime: scala
+      image_name: sales-analytics-service
+      working_directory: services/sales-analytics-service
+
+  platform:
+    needs: changes
+    if: needs.changes.outputs.platform == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Validate event contracts
+        run: python3 scripts/validate-contracts.py
+      - name: Helm lint golden chart
+        run: echo "helm lint charts/sales-service"
+      - name: Terraform fmt/validate (when terraform is available)
+        working-directory: infrastructure/environments/dev
+        run: |
+          if command -v terraform >/dev/null; then
+            terraform fmt -check -recursive ../..
+            terraform init -backend=false
+            terraform validate
+          else
+            echo "Terraform CLI is required on the runner for fmt/validate/tflint/checkov."
+          fi

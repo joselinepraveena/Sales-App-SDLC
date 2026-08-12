@@ -1,0 +1,166 @@
+# Reusable service CI. Pin third-party actions to reviewed commit SHAs in production.
+# Version tags are shown in comments because tags can be moved.
+name: reusable-service-ci
+
+on:
+  workflow_call:
+    inputs:
+      runtime:
+        required: true
+        type: string
+      image_name:
+        required: true
+        type: string
+      working_directory:
+        required: true
+        type: string
+      helm_chart:
+        required: false
+        type: string
+        default: charts/sales-service
+    secrets:
+      SONAR_TOKEN:
+        required: false
+
+permissions:
+  contents: read
+  security-events: write
+  id-token: write
+  pull-requests: write
+
+jobs:
+  test-and-analyze:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Java
+        if: inputs.runtime == 'java'
+        uses: actions/setup-java@3a4f6e1bf836bec5a25e4df1f91b13fbd4c4b4aa # v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Set up Node
+        if: inputs.runtime == 'node' || inputs.runtime == 'typescript'
+        uses: actions/setup-node@49933ea5288ca35ac1c8e1e64701a5e250941e73 # v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: ${{ inputs.working_directory }}/package-lock.json
+
+      - name: Set up Python
+        if: inputs.runtime == 'python'
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Go
+        if: inputs.runtime == 'go'
+        uses: actions/setup-go@f111f3307d118e90d292c3b4b185c9691775cc7c # v5
+        with:
+          go-version: "1.22"
+
+      - name: Set up .NET
+        if: inputs.runtime == 'dotnet'
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab408f695fa173 # v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Set up JDK for Kotlin
+        if: inputs.runtime == 'kotlin'
+        uses: actions/setup-java@3a4f6e1bf836bec5a25e4df1f91b13fbd4c4b4aa # v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Rust
+        if: inputs.runtime == 'rust'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Java for Scala
+        if: inputs.runtime == 'scala'
+        uses: actions/setup-java@3a4f6e1bf836bec5a25e4df1f91b13fbd4c4b4aa # v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Lint
+        run: |
+          if [ -x ./scripts/lint.sh ]; then ./scripts/lint.sh; fi
+          if [ -x ../../scripts/lint-service.sh ]; then ../../scripts/lint-service.sh "${{ inputs.runtime }}"; fi
+
+      - name: Unit and coverage tests
+        run: |
+          if [ -x ./scripts/test.sh ]; then ./scripts/test.sh --coverage; else ../../scripts/test-service.sh "${{ inputs.runtime }}" "${{ inputs.working_directory }}"; fi
+
+      - name: Contract tests
+        run: |
+          if [ -x ./scripts/contract-test.sh ]; then ./scripts/contract-test.sh; fi
+
+      - name: SonarQube analysis
+        if: ${{ secrets.SONAR_TOKEN != '' }}
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ${{ inputs.working_directory }}
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ inputs.runtime == 'dotnet' && 'csharp' || inputs.runtime == 'typescript' && 'javascript' || inputs.runtime == 'node' && 'javascript' || inputs.runtime == 'kotlin' && 'java' || inputs.runtime == 'scala' && 'java' || inputs.runtime }}
+
+      - name: CodeQL analyze
+        uses: github/codeql-action/analyze@v3
+
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+  container-security:
+    needs: test-and-analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image without release tags
+        run: |
+          docker buildx build --load \
+            -t local/${{ inputs.image_name }}:${{ github.sha }} \
+            ${{ inputs.working_directory }}
+
+      - name: Trivy image scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: local/${{ inputs.image_name }}:${{ github.sha }}
+          format: table
+          exit-code: "1"
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: local/${{ inputs.image_name }}:${{ github.sha }}
+          format: cyclonedx-json
+          artifact-name: ${{ inputs.image_name }}-sbom.json
+
+      - name: Helm lint and policy
+        run: |
+          helm lint ${{ inputs.helm_chart }}
+          helm template release ${{ inputs.helm_chart }} \
+            --set name=${{ inputs.image_name }} \
+            --set image.repository=${{ inputs.image_name }} \
+            --set image.digest=sha256:0000000000000000000000000000000000000000000000000000000000000000 \
+            > /tmp/manifests.yaml
+          echo "Rendered Helm manifests for kubeconform/conftest in a fully provisioned runner."

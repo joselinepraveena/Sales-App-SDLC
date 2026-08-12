@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: utility_vm
+  author: sales-platform
+  description: Utility and bastion host packages
+  license: MIT
+  min_ansible_version: "2.16"
+  platforms:
+    - name: Ubuntu
+      versions: ["22.04", "24.04"]

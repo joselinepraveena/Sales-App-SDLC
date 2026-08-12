@@ -1,0 +1,61 @@
+openapi: 3.1.0
+info:
+  title: Customer Service
+  version: 0.1.0
+  description: Customers, accounts, contacts, addresses, consent, and credit profile references.
+servers:
+  - url: https://api.sales.example/customer-service
+paths:
+  /health/ready:
+    get:
+      summary: Readiness
+      responses:
+        "200":
+          description: Ready
+  /api/v1/customers:
+    get:
+      summary: List customers
+      responses:
+        "200":
+          description: Customer collection
+    post:
+      summary: Create customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomer"
+      responses:
+        "201":
+          description: Created
+        "409":
+          description: Duplicate email
+  /api/v1/customers/{id}:
+    get:
+      summary: Get customer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Customer
+        "404":
+          description: Not found
+components:
+  schemas:
+    CreateCustomer:
+      type: object
+      required: [legalName, email]
+      properties:
+        legalName:
+          type: string
+        email:
+          type: string
+          format: email
+        marketingConsent:
+          type: boolean
