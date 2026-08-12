@@ -1,0 +1,5 @@
+---
+os_baseline_packages:
+  - jq
+  - unzip
+  - ca-certificates

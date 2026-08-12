@@ -1,0 +1,155 @@
+name: ""
+fullnameOverride: ""
+replicaCount: 2
+
+image:
+  registry: acr.example.azurecr.io
+  repository: ""
+  digest: ""
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations:
+    azure.workload.identity/client-id: ""
+
+podLabels:
+  azure.workload.identity/use: "true"
+  app.kubernetes.io/part-of: sales-platform
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8080"
+  prometheus.io/path: /metrics
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+probes:
+  startup:
+    path: /health/startup
+    failureThreshold: 30
+    periodSeconds: 5
+  readiness:
+    path: /health/ready
+    periodSeconds: 10
+  liveness:
+    path: /health/live
+    periodSeconds: 20
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 8
+  targetCPUUtilizationPercentage: 70
+
+keda:
+  enabled: false
+  minReplicaCount: 2
+  maxReplicaCount: 20
+  pollingInterval: 15
+  cooldownPeriod: 300
+  triggers: []
+
+pdb:
+  enabled: true
+  minAvailable: 1
+
+networkPolicy:
+  enabled: true
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: aks-istio-ingress
+      ports:
+        - protocol: TCP
+          port: 8080
+  egress:
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 5432
+        - protocol: TCP
+          port: 1433
+        - protocol: TCP
+          port: 5671
+        - protocol: TCP
+          port: 4317
+
+httpRoute:
+  enabled: true
+  parentRefs:
+    - name: sales-gateway
+      namespace: edge
+      sectionName: https
+  hostnames:
+    - api.sales.example
+  path: /api/v1
+
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  path: /metrics
+
+secretProviderClass:
+  enabled: true
+  keyVaultName: kv-sales-dev
+  tenantId: ""
+  userAssignedIdentityID: ""
+  objects: []
+
+config:
+  OTEL_SERVICE_NAME: ""
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector.observability.svc.cluster.local:4317
+  LOG_LEVEL: info
+
+env: []
+
+topologySpreadConstraints:
+  enabled: true
+  maxSkew: 1
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+labels:
+  owner: sales-platform
+  costCenter: cc-sales
+  dataClassification: confidential
+  environment: dev
+
+podDisruptionBudget: {}

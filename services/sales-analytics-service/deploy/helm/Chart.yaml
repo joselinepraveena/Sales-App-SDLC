@@ -1,0 +1,10 @@
+apiVersion: v2
+name: sales-analytics-service
+description: Environment overlay that consumes the golden sales-service chart
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+dependencies:
+  - name: sales-service
+    version: 0.1.0
+    repository: "file://../../../charts/sales-service"

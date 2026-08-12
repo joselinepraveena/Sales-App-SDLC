@@ -1,0 +1,15 @@
+---
+- name: Apply CIS-aligned OS baseline
+  ansible.builtin.apt:
+    name:
+      - unattended-upgrades
+      - auditd
+      - fail2ban
+    state: present
+    update_cache: true
+
+- name: Enable unattended upgrades
+  ansible.builtin.service:
+    name: unattended-upgrades
+    enabled: true
+    state: started

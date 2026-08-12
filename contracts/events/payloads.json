@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sales.example/schemas/event-payloads.json",
+  "title": "Versioned business event payloads",
+  "description": "Backward-compatible event contracts. Additive optional fields are allowed; required field removals are breaking.",
+  "oneOf": [
+    {
+      "properties": {
+        "customerId": { "type": "string" },
+        "accountId": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["customerId"]
+    },
+    {
+      "properties": {
+        "productId": { "type": "string" },
+        "sku": { "type": "string" },
+        "version": { "type": "integer" }
+      },
+      "required": ["productId", "sku"]
+    },
+    {
+      "properties": {
+        "sku": { "type": "string" },
+        "currency": { "type": "string", "minLength": 3, "maxLength": 3 },
+        "unitPrice": { "type": "number" }
+      },
+      "required": ["sku", "currency", "unitPrice"]
+    },
+    {
+      "properties": {
+        "reservationId": { "type": "string" },
+        "sku": { "type": "string" },
+        "quantity": { "type": "integer", "minimum": 1 },
+        "warehouseId": { "type": "string" }
+      },
+      "required": ["reservationId", "sku", "quantity"]
+    },
+    {
+      "properties": {
+        "orderId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "status": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "currency": { "type": "string" }
+      },
+      "required": ["orderId", "customerId", "status"]
+    },
+    {
+      "properties": {
+        "paymentId": { "type": "string" },
+        "orderId": { "type": "string" },
+        "status": { "type": "string" },
+        "amount": { "type": "number" },
+        "providerReference": { "type": "string" }
+      },
+      "required": ["paymentId", "orderId", "status"]
+    },
+    {
+      "properties": {
+        "notificationId": { "type": "string" },
+        "channel": { "enum": ["email", "sms", "push", "webhook"] },
+        "templateId": { "type": "string" },
+        "recipient": { "type": "string" }
+      },
+      "required": ["notificationId", "channel"]
+    },
+    {
+      "properties": {
+        "period": { "type": "string" },
+        "forecastAmount": { "type": "number" },
+        "currency": { "type": "string" }
+      },
+      "required": ["period", "forecastAmount"]
+    }
+  ]
+}

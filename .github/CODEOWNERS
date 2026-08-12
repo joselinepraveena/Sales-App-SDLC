@@ -1,0 +1,18 @@
+# Default reviewers for the sales platform monorepo.
+* @joselinepraveena
+
+/infrastructure/ @joselinepraveena
+/gitops/ @joselinepraveena
+/.github/ @joselinepraveena
+/charts/ @joselinepraveena
+/ansible/ @joselinepraveena
+
+/services/customer-service/ @joselinepraveena
+/services/product-catalog-service/ @joselinepraveena
+/services/pricing-service/ @joselinepraveena
+/services/inventory-service/ @joselinepraveena
+/services/order-service/ @joselinepraveena
+/services/payment-service/ @joselinepraveena
+/services/notification-service/ @joselinepraveena
+/services/sales-analytics-service/ @joselinepraveena
+/apps/web/ @joselinepraveena

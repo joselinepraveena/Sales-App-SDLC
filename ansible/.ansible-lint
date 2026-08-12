@@ -1,0 +1,5 @@
+skip_list:
+  - yaml[line-length]
+  - experimental
+warn_list:
+  - risky-file-permissions

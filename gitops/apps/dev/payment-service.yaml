@@ -1,0 +1,10 @@
+name: payment-service
+image:
+  repository: payment-service
+  digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+labels:
+  environment: dev
+  owner: payment-domain
+  dataClassification: restricted
+config:
+  OTEL_SERVICE_NAME: payment-service

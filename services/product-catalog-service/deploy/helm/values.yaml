@@ -1,0 +1,16 @@
+name: product-catalog-service
+image:
+  repository: product-catalog-service
+labels:
+  owner: product-domain
+  costCenter: cc-sales
+  dataClassification: confidential
+config:
+  OTEL_SERVICE_NAME: product-catalog-service
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

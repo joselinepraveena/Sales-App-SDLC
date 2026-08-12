@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "sales-service Helm values",
+  "type": "object",
+  "required": ["name", "image"],
+  "additionalProperties": true,
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "replicaCount": { "type": "integer", "minimum": 1 },
+    "image": {
+      "type": "object",
+      "required": ["repository"],
+      "properties": {
+        "registry": { "type": "string" },
+        "repository": { "type": "string", "minLength": 1 },
+        "digest": { "type": "string" },
+        "tag": { "type": "string" },
+        "pullPolicy": { "enum": ["Always", "IfNotPresent", "Never"] }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "required": ["requests", "limits"],
+      "properties": {
+        "requests": {
+          "type": "object",
+          "required": ["cpu", "memory"]
+        },
+        "limits": {
+          "type": "object",
+          "required": ["cpu", "memory"]
+        }
+      }
+    },
+    "securityContext": {
+      "type": "object",
+      "properties": {
+        "runAsNonRoot": { "const": true }
+      }
+    }
+  }
+}

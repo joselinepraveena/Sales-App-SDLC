@@ -1,0 +1,16 @@
+name: inventory-service
+image:
+  repository: inventory-service
+labels:
+  owner: inventory-domain
+  costCenter: cc-sales
+  dataClassification: confidential
+config:
+  OTEL_SERVICE_NAME: inventory-service
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

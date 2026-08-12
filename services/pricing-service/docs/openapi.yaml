@@ -1,0 +1,36 @@
+openapi: 3.1.0
+info:
+  title: Pricing and Promotions
+  version: 0.1.0
+paths:
+  /api/v1/quotes:
+    post:
+      summary: Calculate a quote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currency, lines]
+              properties:
+                currency:
+                  type: string
+                  minLength: 3
+                  maxLength: 3
+                promotion_code:
+                  type: string
+                lines:
+                  type: array
+                  items:
+                    type: object
+                    required: [sku, quantity]
+                    properties:
+                      sku:
+                        type: string
+                      quantity:
+                        type: integer
+                        minimum: 1
+      responses:
+        "200":
+          description: Quote

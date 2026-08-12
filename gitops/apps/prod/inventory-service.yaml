@@ -1,0 +1,9 @@
+name: inventory-service
+image:
+  repository: inventory-service
+  digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+labels:
+  environment: prod
+  owner: inventory-domain
+config:
+  OTEL_SERVICE_NAME: inventory-service

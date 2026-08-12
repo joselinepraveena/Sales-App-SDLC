@@ -1,0 +1,9 @@
+name: order-service
+image:
+  repository: order-service
+  digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+labels:
+  environment: dev
+  owner: order-domain
+config:
+  OTEL_SERVICE_NAME: order-service

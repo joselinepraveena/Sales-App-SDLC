@@ -1,0 +1,6 @@
+---
+- name: Install utility packages
+  ansible.builtin.apt:
+    name: "{{ os_baseline_packages | default(['jq']) }}"
+    state: present
+    update_cache: true

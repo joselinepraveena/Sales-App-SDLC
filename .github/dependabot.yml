@@ -1,0 +1,73 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: docker
+    directory: /services/customer-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /services/product-catalog-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /services/pricing-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /services/inventory-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /services/order-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /services/payment-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /services/notification-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /services/sales-analytics-service
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: maven
+    directory: /services/customer-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /services/product-catalog-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: /services/pricing-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: gomod
+    directory: /services/inventory-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: nuget
+    directory: /services/order-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: gradle
+    directory: /services/payment-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: cargo
+    directory: /services/notification-service
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /apps/web
+    schedule:
+      interval: weekly

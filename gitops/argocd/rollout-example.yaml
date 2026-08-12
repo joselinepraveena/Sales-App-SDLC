@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: progressive-delivery-example
+  namespace: sales-dev
+spec:
+  replicas: 4
+  strategy:
+    canary:
+      maxUnavailable: 0
+      steps:
+        - setWeight: 10
+        - pause: { duration: 5m }
+        - setWeight: 50
+        - pause: { duration: 10m }
+        - analysis:
+            templates:
+              - templateName: success-rate
+            args:
+              - name: service-name
+                value: order-service
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: order-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: order-service
+    spec:
+      containers:
+        - name: app
+          image: acr.example.azurecr.io/order-service@sha256:replace-with-signed-digest

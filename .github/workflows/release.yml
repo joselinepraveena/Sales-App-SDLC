@@ -1,0 +1,134 @@
+name: release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+  attestations: write
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      customer: ${{ steps.filter.outputs.customer }}
+      product: ${{ steps.filter.outputs.product }}
+      pricing: ${{ steps.filter.outputs.pricing }}
+      inventory: ${{ steps.filter.outputs.inventory }}
+      order: ${{ steps.filter.outputs.order }}
+      payment: ${{ steps.filter.outputs.payment }}
+      notification: ${{ steps.filter.outputs.notification }}
+      analytics: ${{ steps.filter.outputs.analytics }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            customer:
+              - 'services/customer-service/**'
+            product:
+              - 'services/product-catalog-service/**'
+            pricing:
+              - 'services/pricing-service/**'
+            inventory:
+              - 'services/inventory-service/**'
+            order:
+              - 'services/order-service/**'
+            payment:
+              - 'services/payment-service/**'
+            notification:
+              - 'services/notification-service/**'
+            analytics:
+              - 'services/sales-analytics-service/**'
+
+  customer:
+    needs: changes
+    if: needs.changes.outputs.customer == 'true'
+    uses: ./.github/workflows/reusable-service-release.yml
+    with:
+      runtime: java
+      image_name: customer-service
+      working_directory: services/customer-service
+      chart_name: customer-service
+    secrets: inherit
+
+  product:
+    needs: changes
+    if: needs.changes.outputs.product == 'true'
+    uses: ./.github/workflows/reusable-service-release.yml
+    with:
+      runtime: typescript
+      image_name: product-catalog-service
+      working_directory: services/product-catalog-service
+      chart_name: product-catalog-service
+    secrets: inherit
+
+  pricing:
+    needs: changes
+    if: needs.changes.outputs.pricing == 'true'
+    uses: ./.github/workflows/reusable-service-release.yml
+    with:
+      runtime: python
+      image_name: pricing-service
+      working_directory: services/pricing-service
+      chart_name: pricing-service
+    secrets: inherit
+
+  inventory:
+    needs: changes
+    if: needs.changes.outputs.inventory == 'true'
+    uses: ./.github/workflows/reusable-service-release.yml
+    with:
+      runtime: go
+      image_name: inventory-service
+      working_directory: services/inventory-service
+      chart_name: inventory-service
+    secrets: inherit
+
+  order:
+    needs: changes
+    if: needs.changes.outputs.order == 'true'
+    uses: ./.github/workflows/reusable-service-release.yml
+    with:
+      runtime: dotnet
+      image_name: order-service
+      working_directory: services/order-service
+      chart_name: order-service
+    secrets: inherit
+
+  payment:
+    needs: changes
+    if: needs.changes.outputs.payment == 'true'
+    uses: ./.github/workflows/reusable-service-release.yml
+    with:
+      runtime: kotlin
+      image_name: payment-service
+      working_directory: services/payment-service
+      chart_name: payment-service
+    secrets: inherit
+
+  notification:
+    needs: changes
+    if: needs.changes.outputs.notification == 'true'
+    uses: ./.github/workflows/reusable-service-release.yml
+    with:
+      runtime: rust
+      image_name: notification-service
+      working_directory: services/notification-service
+      chart_name: notification-service
+    secrets: inherit
+
+  analytics:
+    needs: changes
+    if: needs.changes.outputs.analytics == 'true'
+    uses: ./.github/workflows/reusable-service-release.yml
+    with:
+      runtime: scala
+      image_name: sales-analytics-service
+      working_directory: services/sales-analytics-service
+      chart_name: sales-analytics-service
+    secrets: inherit

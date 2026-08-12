@@ -1,0 +1,7 @@
+GET     /health/live                 controllers.HealthController.live
+GET     /health/ready                controllers.HealthController.ready
+GET     /health/startup              controllers.HealthController.startup
+GET     /api/v1/kpis                 controllers.AnalyticsController.kpis
+POST    /api/v1/forecasts            controllers.AnalyticsController.updateForecast
+GET     /api/v1/forecasts            controllers.AnalyticsController.forecasts
+GET     /metrics                     controllers.HealthController.live

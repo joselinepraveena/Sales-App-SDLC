@@ -1,0 +1,16 @@
+name: payment-service
+image:
+  repository: payment-service
+labels:
+  owner: payment-domain
+  costCenter: cc-sales
+  dataClassification: restricted
+config:
+  OTEL_SERVICE_NAME: payment-service
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

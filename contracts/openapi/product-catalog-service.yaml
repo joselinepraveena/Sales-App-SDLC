@@ -1,0 +1,28 @@
+openapi: 3.1.0
+info:
+  title: Product Catalogue
+  version: 0.1.0
+paths:
+  /api/v1/products:
+    get:
+      summary: List products
+      responses:
+        "200":
+          description: Products
+    post:
+      summary: Create product
+      responses:
+        "201":
+          description: Created
+  /api/v1/products/{id}/publish:
+    post:
+      summary: Publish product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Published

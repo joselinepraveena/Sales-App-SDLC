@@ -1,0 +1,24 @@
+openapi: 3.1.0
+info:
+  title: Order Management
+  version: 0.1.0
+  description: Quotes, carts, sales orders, and saga coordination for inventory and payment.
+paths:
+  /api/v1/orders:
+    post:
+      summary: Create order
+      responses:
+        "201":
+          description: Created
+  /api/v1/orders/{id}/confirm:
+    post:
+      summary: Confirm after inventory reservation and payment authorization
+      responses:
+        "200":
+          description: Confirmed
+  /api/v1/orders/{id}/cancel:
+    post:
+      summary: Compensate the saga
+      responses:
+        "200":
+          description: Cancelled

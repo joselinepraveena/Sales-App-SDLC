@@ -1,0 +1,9 @@
+name: product-catalog-service
+image:
+  repository: product-catalog-service
+  digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+labels:
+  environment: test
+  owner: product-domain
+config:
+  OTEL_SERVICE_NAME: product-catalog-service
