@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /src
 COPY package.json ./
 RUN npm install --omit=dev=false
@@ -7,7 +7,7 @@ COPY tsconfig.json ./
 COPY src ./src
 RUN npm run build
 
-FROM node:22-alpine
+FROM node:26-alpine
 WORKDIR /app
 RUN addgroup -g 65532 nonroot && adduser -u 65532 -G nonroot -D nonroot
 COPY --from=build /src/package.json ./
