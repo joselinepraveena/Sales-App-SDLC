@@ -104,7 +104,7 @@ jobs:
 
       - name: SonarQube analysis
         if: ${{ secrets.SONAR_TOKEN != '' }}
-        uses: SonarSource/sonarqube-scan-action@v4
+        uses: SonarSource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
