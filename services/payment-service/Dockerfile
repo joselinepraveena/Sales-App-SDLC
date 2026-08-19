@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM eclipse-temurin:21-jdk-jammy AS build
+FROM eclipse-temurin:22-jdk-jammy AS build
 WORKDIR /src
 COPY . .
 RUN apt-get update && apt-get install -y --no-install-recommends unzip \
@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends unzip \
     && ./gradle-8.12/bin/gradle --no-daemon installDist \
     && rm -rf /var/lib/apt/lists/*
 
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:22-jre-jammy
 WORKDIR /app
 RUN groupadd --gid 65532 nonroot && useradd --uid 65532 --gid 65532 --no-create-home nonroot
 COPY --from=build /src/build/install/payment-service /app
