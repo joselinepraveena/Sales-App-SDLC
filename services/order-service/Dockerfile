@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY src/Sales.OrderService/*.csproj ./Sales.OrderService/
 RUN dotnet restore Sales.OrderService/Sales.OrderService.csproj
