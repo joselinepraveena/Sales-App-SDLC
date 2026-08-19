@@ -4,7 +4,7 @@ WORKDIR /src
 COPY . .
 RUN sbt stage
 
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:22-jre-jammy
 WORKDIR /app
 RUN groupadd --gid 65532 nonroot && useradd --uid 65532 --gid 65532 --no-create-home nonroot
 COPY --from=build /src/target/universal/stage /app
