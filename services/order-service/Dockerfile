@@ -6,7 +6,7 @@ RUN dotnet restore Sales.OrderService/Sales.OrderService.csproj
 COPY src/Sales.OrderService ./Sales.OrderService
 RUN dotnet publish Sales.OrderService/Sales.OrderService.csproj -c Release -o /out --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 RUN groupadd --gid 65532 nonroot && useradd --uid 65532 --gid 65532 --no-create-home nonroot
 COPY --from=build /out .
