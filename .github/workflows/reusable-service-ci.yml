@@ -111,12 +111,12 @@ jobs:
           projectBaseDir: ${{ inputs.working_directory }}
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: ${{ inputs.runtime == 'dotnet' && 'csharp' || inputs.runtime == 'typescript' && 'javascript' || inputs.runtime == 'node' && 'javascript' || inputs.runtime == 'kotlin' && 'java' || inputs.runtime == 'scala' && 'java' || inputs.runtime }}
 
       - name: CodeQL analyze
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
 
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@v2
