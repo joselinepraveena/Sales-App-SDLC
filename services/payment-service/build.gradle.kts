@@ -12,13 +12,13 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core:3.0.3")
-    implementation("io.ktor:ktor-server-netty:3.0.3")
-    implementation("io.ktor:ktor-server-content-negotiation:3.0.3")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.3")
-    implementation("io.ktor:ktor-server-status-pages:3.0.3")
+    implementation("io.ktor:ktor-server-core:3.5.2")
+    implementation("io.ktor:ktor-server-netty:3.5.2")
+    implementation("io.ktor:ktor-server-content-negotiation:3.5.2")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.5.2")
+    implementation("io.ktor:ktor-server-status-pages:3.5.2")
     implementation("ch.qos.logback:logback-classic:1.5.16")
-    testImplementation("io.ktor:ktor-server-test-host:3.0.3")
+    testImplementation("io.ktor:ktor-server-test-host:3.5.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }
 
