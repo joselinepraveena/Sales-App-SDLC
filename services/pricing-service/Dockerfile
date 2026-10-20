@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1.7
-FROM python:3.12-slim AS build
+FROM python:3.14-slim AS build
 WORKDIR /src
 COPY requirements.txt .
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 COPY app ./app
 
-FROM python:3.12-slim
+FROM python:3.14-slim
 WORKDIR /app
 RUN groupadd --gid 65532 nonroot && useradd --uid 65532 --gid 65532 --no-create-home nonroot
 COPY --from=build /install /usr/local
