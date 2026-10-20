@@ -17,7 +17,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation:3.0.3")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.3")
     implementation("io.ktor:ktor-server-status-pages:3.0.3")
-    implementation("ch.qos.logback:logback-classic:1.5.16")
+    implementation("ch.qos.logback:logback-classic:1.6.1")
     testImplementation("io.ktor:ktor-server-test-host:3.0.3")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }
