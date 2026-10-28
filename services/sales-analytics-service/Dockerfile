@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM sbtscala/scala-sbt:eclipse-temurin-21_1.10.6_2.13.15 AS build
+FROM sbtscala/scala-sbt:eclipse-temurin-25.0.4_7_2.x AS build
 WORKDIR /src
 COPY . .
 RUN sbt stage
